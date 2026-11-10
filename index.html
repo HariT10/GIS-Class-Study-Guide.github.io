@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEOG*3440: GIS for Decision-Making - Study Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">GEOG*3440: GIS for Decision-Making</h1>
+                <p class="text-sm text-slate-400">Comprehensive Exam Study Portal & Expanded Flashcard Decks</p>
+            </div>
+            <div class="w-full md:w-72">
+                <input type="text" id="searchInput" placeholder="Search topics, models, terms..." class="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm focus:outline-none focus:border-emerald-500 text-slate-200 placeholder-slate-500">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="lg:col-span-1 space-y-2">
+            <h2 class="text-xs font-semibold tracking-wider text-slate-400 uppercase px-3 mb-3">Course Weeks</h2>
+            <nav id="weekNav" class="space-y-1">
+                <!-- Dynamically populated via JS -->
+            </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="lg:col-span-3 space-y-8" id="contentArea">
+            <!-- Dynamically populated via JS -->
+        </main>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 border-t border-slate-700 py-6 text-center text-sm text-slate-400">
+        <p>GEOG*3440 Study Portal • Built for Exam Preparation & GIS Reference • Harishan T</p>
+    </footer>
+
+    <script>
+        const courseData = [
+            {
+                week: "Week 0 & 1",
+                title: "Introductions, Spatial Decisions & AGOL",
+                summary: `
+                    <h3 class="text-lg font-semibold text-emerald-400 mb-2">Core Concepts & Themes</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                        <li><strong>GEOG*2480 vs. 3440 Shift:</strong> Moving from technical cartography (making maps look right, projections, data classification) to how spatial choices drive formal and informal policy/business decisions. Requires domain expertise, ethics, and transparency about limitations.</li>
+                        <li><strong>Spatial Decisions:</strong> ~80% of datasets have a spatial component. Decisions involve selecting a course of action from alternatives (formal like municipal facility siting vs. informal like daily routing).</li>
+                        <li><strong>MacEachren's Cartographic Cube:</strong> Balances private vs. public use, unknown vs. known information, and high vs. low user interaction.</li>
+                        <li><strong>SOTL & Metacognition:</strong> Reflection bridges mechanical tool execution and deep conceptual understanding. Technical errors are treated as diagnostic information rather than failure.</li>
+                        <li><strong>WebGIS & AGOL:</strong> Hosted feature layers, map/vector tile services, and feature services enable scalable enterprise distribution without managing underlying infrastructure.</li>
+                    </ul>
+                `,
+                flashcards: [
+                    { q: "What is the primary shift from GEOG*2480 to GEOG*3440?", a: "Moving from technical map creation/cartography to how mapping choices drive formal/informal policy and business decisions, requiring critical reflection and ethics." },
+                    { q: "Approximately what percentage of all collected datasets include a spatial component?", a: "Roughly 80%." },
+                    { q: "How is a decision formally defined in decision support systems?", a: "The selection of a specific course of action from among a set of decision alternatives or options." },
+                    { q: "What are the three dimensions of MacEachren's Cartographic Cube?", a: "Private vs. Public use, Unknown vs. Known information, and High vs. Low user interaction." },
+                    { q: "What is the correct chronological sequence of the public policy process?", a: "Problem ID -> Formulation -> Adoption -> Implementation -> Evaluation." },
+                    { q: "What is the loading dock model of science communication?", a: "A traditional, one-way transmission view where science/maps are produced by experts and 'loaded' out to passive public audiences." },
+                    { q: "Why does SOTL emphasize viewing technical errors as diagnostic information?", a: "To foster technical resilience, autonomy, and deep conceptual understanding rather than mindless tool execution." },
+                    { q: "What are the primary limitations of ArcGIS Online (AGOL)?", a: "AGOL struggles with static cartographically complex map design, custom analytic tools, and complex relational database management." }
+                ],
+                quiz: [
+                    { q: "Approximately what percentage of collected datasets include a spatial component?", answer: "80%" },
+                    { q: "What is the correct order of the public policy process stages?", answer: "Problem ID -> Formulation -> Adoption -> Implementation -> Evaluation" }
+                ]
+            },
+            {
+                week: "Week 2",
+                title: "Multi-Criteria Evaluation (MCE)",
+                summary: `
+                    <h3 class="text-lg font-semibold text-emerald-400 mb-2">Core Concepts & Themes</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                        <li><strong>Definition:</strong> A systematic way of comparing choice alternatives using weighted criteria (pro-con list with calculated results). Not inherently spatial on its own.</li>
+                        <li><strong>MCE Problem Types:</strong> Choice, Ranking, Sorting, and Portfolio selection.</li>
+                        <li><strong>Non-Compensatory Methods:</strong> Hard cut-offs using Boolean constraints (e.g., true/false, 0/1 limits like protected water bodies). Keyword: AND.</li>
+                        <li><strong>Compensatory Methods:</strong> Poor performance on one criterion can be balanced by another, combined via Weighted Linear Combination (WLC).</li>
+                        <li><strong>MCE Workflow:</strong> Goal -> Criteria -> Derive Data -> Transform Data -> Score/Weight Criteria -> Locate.</li>
+                        <li><strong>AHP (Analytic Hierarchy Process):</strong> Decision-makers compare pairs of criteria on a predefined scale to automatically calculate percentage weights.</li>
+                        <li><strong>RFPs (Requests for Proposals):</strong> Professional mechanism for soliciting GIS consulting work, consisting of an Objective, Scope of Work, and Evaluation Criteria.</li>
+                    </ul>
+                `,
+                flashcards: [
+                    { q: "What distinguishes non-compensatory from compensatory MCE methods?", a: "Non-compensatory use hard Boolean cut-offs (failing one eliminates the option); compensatory allow trade-offs where poor performance on one factor is offset by another." },
+                    { q: "What is the difference between factors and constraints in MCE?", a: "Constraints are hard Boolean limits (0/1 filters that exclude areas); factors are continuous variables showing degrees of suitability." },
+                    { q: "What are the three core components of a Request for Proposal (RFP)?", a: "Objective, Scope of Work, and Evaluation Criteria." },
+                    { q: "How does the Analytic Hierarchy Process (AHP) determine weights?", a: "By having the user compare relative importance of criterion pairs on a predefined scale to automatically generate percentage weights." },
+                    { q: "Why is MCE considered a normative model rather than purely descriptive?", a: "Because results emerge from analyst/decision-maker parameter choices and value weights rather than purely objective data extraction." },
+                    { q: "What are the four primary MCE problem types?", a: "Choice, Ranking, Sorting, and Portfolio selection." },
+                    { q: "What tool in ArcGIS Pro is primarily used for MCE suitability workflows?", a: "The Suitability Modeler." }
+                ],
+                quiz: [
+                    { q: "How are constraints implemented in MCE?", answer: "They function as absolute filters (Boolean 0/1 limits) that completely exclude certain areas." }
+                ]
+            },
+            {
+                week: "Week 3",
+                title: "Location-Allocation & Catchment Areas",
+                summary: `
+                    <h3 class="text-lg font-semibold text-emerald-400 mb-2">Core Concepts & Themes</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                        <li><strong>Catchment vs. Service Area:</strong> Catchment represents conceptual territory; service area is the technical implementation (Euclidean buffers vs. network distance/time).</li>
+                        <li><strong>LSCP (Location Set Covering Problem):</strong> Minimize the *number* of facilities required to cover 100% of demand within a maximum travel limit.</li>
+                        <li><strong>MCLP (Maximal Covering Location Problem):</strong> Maximize total demand covered given a fixed budget or restricted number of facilities ($p$).</li>
+                        <li><strong>Location-Allocation (P-Median):</strong> Simultaneously determine facility placements and demand assignments to minimize overall travel impedance (e.g., total distance/cost).</li>
+                        <li><strong>Spatial Data Management:</strong> File Geodatabases (Esri proprietary, folder of files) vs. GeoPackages (open standard, single SQLite file).</li>
+                    </ul>
+                `,
+                flashcards: [
+                    { q: "What is the primary objective of LSCP (Location Set Covering Problem)?", a: "Minimize the number of facilities required to provide 100% full coverage to all demand points within a service range." },
+                    { q: "How does MCLP differ from LSCP?", a: "MCLP maximizes demand coverage when resources (facilities/budget) are insufficient for 100% full coverage." },
+                    { q: "What does P-Median / Minimize Impedance do in Location-Allocation?", a: "Places p facilities to minimize total travel distance or cost across all demand points." },
+                    { q: "What is the key structural difference between File Geodatabases and GeoPackages?", a: "File GDBs are Esri proprietary folders; GeoPackages are open-standard single-file SQLite databases." },
+                    { q: "What is a heuristic in optimization problems?", a: "An approach designed to find a feasible solution quickly, but with no mathematical guarantee of absolute optimality." },
+                    { q: "How does the Huff Model function in retail location-allocation?", a: "It measures the probabilistic attraction of stores based on size and distance decay (gravity model)." }
+                ],
+                quiz: [
+                    { q: "Which problem minimizes the number of facilities to achieve 100% coverage?", answer: "Location Set Covering Problem (LSCP)" }
+                ]
+            },
+            {
+                week: "Week 4",
+                title: "Modeling Accessibility",
+                summary: `
+                    <h3 class="text-lg font-semibold text-emerald-400 mb-2">Core Concepts & Themes</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                        <li><strong>Accessibility Definition:</strong> Quantifying movement opportunity—how easy it is to reach destinations that enable participation in activities.</li>
+                        <li><strong>Networks & Isochrones:</strong> Movement happens along discrete network nodes and edges. An isochrone maps lines of equal travel time from a focal location.</li>
+                        <li><strong>Opportunity Measures:</strong> Count the number of potential destinations reachable within a given distance cut-off, weighting all destinations equally.</li>
+                        <li><strong>Gravity / Distance-Decay Measures:</strong> Destinations are weighted by relative distance (closer destinations carry higher weight) and destination attributes (e.g., size).</li>
+                        <li><strong>2SFCA (Two-Step Floating Catchment Area):</strong> Step 1 calculates provider-to-population supply ratios; Step 2 sums those ratios within each population demand catchment area.</li>
+                    </ul>
+                `,
+                flashcards: [
+                    { q: "What is the simplest definition of modeling accessibility?", a: "Quantifying movement opportunity." },
+                    { q: "What is an isochrone in network analysis?", a: "A line of equal travel time used to map how far one can travel within a given time limit from a focal location." },
+                    { q: "What are the two steps in the 2SFCA model?", a: "Step 1: Calculate provider-to-population supply ratios in service areas. Step 2: Sum those supply ratios across population catchment areas." },
+                    { q: "What is a heuristic in spatial optimization?", a: "An approach designed to provide a feasible solution, but with no mathematical guarantee of optimality." },
+                    { q: "What are Hagerstrand's three spatial constraints in time geography?", a: "Capability constraints (disability/limits), Coupling constraints (face-to-face meetups), and Authority constraints (opening hours/access rules)." },
+                    { q: "How do opportunity measures calculate accessibility?", a: "By counting the total number of destinations reachable within a specific distance or time threshold with equal weight." }
+                ],
+                quiz: [
+                    { q: "What are the two computational steps of 2SFCA?", answer: "Step 1: Create provider service areas and calculate supply ratios. Step 2: Sum supply ratios within population catchment areas." }
+                ]
+            },
+            {
+                week: "Week 5",
+                title: "Network Analysis & Least-Cost Paths",
+                summary: `
+                    <h3 class="text-lg font-semibold text-emerald-400 mb-2">Core Concepts & Themes</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                        <li><strong>Graph Theory Components:</strong> Networks consist of <em>nodes</em> (intersections, junctions), <em>edges/links</em> (line segments), <em>link impedance</em> (travel cost/time), and <em>turn restrictions</em>.</li>
+                        <li><strong>Shortest Path:</strong> Implements algorithms like Dijkstra's to navigate vector networks based on edge costs.</li>
+                        <li><strong>Least-Cost Path (Raster Distance Analysis):</strong> 
+                            1. Calculate straight-line distance.
+                            2. Apply a cost surface to generate an accumulative distance raster.
+                            3. Connect regions via optimal pathways (used for wildlife corridors, pipelines, or emergency response).
+                        </li>
+                    </ul>
+                `,
+                flashcards: [
+                    { q: "What do nodes and links represent in a geographic network?", a: "Nodes represent intersections, junctions, or facilities; links represent street segments, rail lines, or pipes." },
+                    { q: "What is link impedance?", a: "The cost incurred by traversing a link, such as travel time, distance, speed limit, or risk." },
+                    { q: "What are the three main steps in raster least-cost path analysis?", a: "1. Straight-line distance. 2. Apply cost surface to create accumulative distance raster. 3. Connect regions with optimal path." },
+                    { q: "What algorithm is classically used for vector shortest path calculation?", a: "Dijkstra's algorithm." },
+                    { q: "What is the difference between a walk, a path, and a circuit in graph theory?", a: "Walk = sequence of edges; Path = walk without repeated nodes/edges; Circuit = closed walk starting and ending at the same node." }
+                ],
+                quiz: [
+                    { q: "What do nodes represent in a transportation network?", answer: "Intersections, junctions, or key facility points." }
+                ]
+            },
+            {
+                week: "Week 6",
+                title: "Enterprise GIS & Project Management",
+                summary: `
+                    <h3 class="text-lg font-semibold text-emerald-400 mb-2">Core Concepts & Themes</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                        <li><strong>Spatial Data Infrastructure (SDI):</strong> Geoportals, metadata, and open data sharing to reduce redundancy and enable multi-agency data reuse.</li>
+                        <li><strong>WebGIS & Architecture:</strong> Hosted services including map tile services, vector tile services, and feature services delivered via the cloud (SaaS/APIs).</li>
+                        <li><strong>Enterprise GIS:</strong> Integrating people, processes, and technology across an organization (placement in IT, executive office, user departments, or outsourced).</li>
+                        <li><strong>Project Management Lifecycle:</strong> Initiating, Planning (Scope, Time, Cost, Quality, Risk, Procurement), Executing, Controlling, and Closing.</li>
+                        <li><strong>Risk Management Strategies:</strong> Avoidance, Transference, Mitigation, and Acceptance.</li>
+                    </ul>
+                `,
+                flashcards: [
+                    { q: "What are the three core components of a Spatial Data Infrastructure (SDI)?", a: "Geoportals, metadata, and search." },
+                    { q: "What are the standard project management phases in GIS?", a: "Initiating, Planning, Executing, Controlling, and Closing." },
+                    { q: "What are the four ways to approach project risk?", a: "Avoidance, Transference, Mitigation, and Acceptance." },
+                    { q: "What is a Gantt chart used for in GIS project management?", a: "Outlining hierarchical tasks, schedules, timelines, and resource durations from data acquisition to final map production." },
+                    { q: "What is the difference between map tile services and vector tile services?", a: "Map tiles deliver static raster images (weather maps); vector tiles deliver raw vector geometry rendered dynamically by the client device (Google Maps style)." }
+                ],
+                quiz: [
+                    { q: "What are the four strategies for handling project risk?", answer: "Mitigation, avoidance, transference, and acceptance" }
+                ]
+            },
+            {
+                week: "Week 7",
+                title: "Scenario Planning & Models",
+                summary: `
+                    <h3 class="text-lg font-semibold text-emerald-400 mb-2">Core Concepts & Themes</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                        <li><strong>Scenario Planning:</strong> Generating alternative hypotheses of what might happen using the same model with different assumptions (Robust Decision-Making / Robust Adaptive Planning).</li>
+                        <li><strong>Model Typologies:</strong> 
+                            <ul>
+                                <li><em>Data vs. Process:</em> Model of reality vs. expression of how the world works/analytical workflows.</li>
+                                <li><em>Static vs. Dynamic:</em> Single point in time vs. multi-stage temporal feedback loops.</li>
+                                <li><em>Deterministic vs. Stochastic:</em> Guaranteed single outcome vs. incorporating randomness and probability distributions.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Model Validation:</strong> Testing whether a model can predict past conditions (stationarity), work elsewhere (transfer learning), or via internal cross-validation.</li>
+                    </ul>
+                `,
+                flashcards: [
+                    { q: "What is a stochastic model?", a: "A model that incorporates randomness and produces varying probabilities of outcomes rather than a single fixed result." },
+                    { q: "How does a static model differ from a dynamic model?", a: "Static models evaluate a system at a single fixed point in time; dynamic models simulate changes across time where outputs become subsequent inputs." },
+                    { q: "What are three methods for validating predictive models?", a: "1. Predicting past conditions (stationarity). 2. Testing transferability elsewhere. 3. Internal cross-validation." },
+                    { q: "What is Robust Decision-Making (RDM)?", a: "Planning strategies that test large ensembles of plausible futures to find actions that perform well across the most alternative scenarios." },
+                    { q: "What do Ecosystem Services (ES) models quantify?", a: "The monetary and physical benefits nature provides to society, such as flood damage mitigation and carbon sequestration." }
+                ],
+                quiz: [
+                    { q: "What type of model incorporates randomness and variable outcome probabilities?", answer: "Stochastic model" }
+                ]
+            },
+            {
+                week: "Week 8",
+                title: "Spatial Statistics & APIs",
+                summary: `
+                    <h3 class="text-lg font-semibold text-emerald-400 mb-2">Core Concepts & Themes</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                        <li><strong>GIS APIs:</strong> Library modules (e.g., GeoPandas spatial joins) and communication protocols (e.g., Mapbox routing, Google Places API) enabling lightweight, platform-independent architectures.</li>
+                        <li><strong>Tobler's First Law of Geography:</strong> Everything is related to everything else, but near things are more related than distant things.</li>
+                        <li><strong>Spatial Weights:</strong> Inverse distance, fixed radius, k-nearest neighbors, and spatial contiguity (Queen/Rook case).</li>
+                        <li><strong>Global Moran's I:</strong> Gives a single summary statistic indicating overall clustering, randomness, or dispersion across an entire study region.</li>
+                        <li><strong>Local Moran's I (LISA) / Getis-Ord Gi*:</strong> Pinpoints local spatial clusters (High-High, Low-Low) and spatial outliers (High-Low, Low-High). Positive Z-scores indicate clustering; negative Z-scores indicate outliers.</li>
+                    </ul>
+                `,
+                flashcards: [
+                    { q: "What does Tobler's First Law of Geography state?", a: "Everything is related to everything else, but near things are more related than distant things." },
+                    { q: "What is the difference between Global and Local Moran's I?", a: "Global Moran's I provides a single summary statistic for the entire study area; Local Moran's I pinpoints exact local clusters and outliers." },
+                    { q: "What does a large positive Z-score indicate in spatial autocorrelation?", a: "Statistically significant spatial clustering (similar values near each other)." },
+                    { q: "What are two major advantages of GIS APIs?", a: "1. Light-client architecture without desktop GIS installations. 2. Interoperability across different platforms and systems." },
+                    { q: "What is the difference between Getis-Ord Gi* and Local Moran's I?", a: "Getis-Ord highlights hot spots/cold spots (High-High vs. Low-Low); Local Moran's I also detects spatial outliers (High-Low and Low-High)." }
+                ],
+                quiz: [
+                    { q: "What does a large negative Z-score indicate in LISA analysis?", answer: "A spatial outlier (an observation significantly different from its neighbors)." }
+                ]
+            },
+            {
+                week: "Week 9",
+                title: "Uncertainty, Error, and Bias",
+                summary: `
+                    <h3 class="text-lg font-semibold text-emerald-400 mb-2">Core Concepts & Themes</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-slate-300">
+                        <li><strong>Uncertainty vs. Error:</strong> Error is the objective, measurable discrepancy between data and true reality; uncertainty reflects our doubt in data perfection, depending on user context and application.</li>
+                        <li><strong>Epistemic vs. Aleatory Uncertainty:</strong> Epistemic stems from lack of knowledge and can be "cured" with more data; aleatory stems from inherent randomness (e.g., weather turbulence) that more data cannot eliminate.</li>
+                        <li><strong>Ambiguity vs. Vagueness:</strong> Ambiguity involves language/meanings with multiple interpretations (semantics); vagueness involves continuous phenomena with soft, indeterminate boundaries (e.g., urban core vs. suburbs).</li>
+                        <li><strong>Data Quality Dimensions:</strong> Positional accuracy, attribute accuracy, completeness, currency, and provenance, evaluated via metadata for <em>fitness for use</em>.</li>
+                        <li><strong>Fuzzy Sets:</strong> Allows elements to have partial membership ranging continuously from 0 to 1 when modeling continuous features with soft boundaries.</li>
+                    </ul>
+                `,
+                flashcards: [
+                    { q: "What distinguishes error from uncertainty?", a: "Error is the objective difference between asserted and true values; uncertainty is our subjective doubt depending on user context and application." },
+                    { q: "What is the difference between epistemic and aleatory uncertainty?", a: "Epistemic uncertainty can be reduced/cured with more data; aleatory uncertainty stems from inherent randomness and cannot be eliminated." },
+                    { q: "What is 'fitness for use' in spatial data quality?", a: "The evaluation of whether a dataset's quality and limitations make it suitable for a specific application, rather than searching for a 'perfect' dataset." },
+                    { q: "How do fuzzy sets handle indeterminate spatial boundaries?", a: "By allowing elements to have partial membership ranging continuously from 0 to 1." },
+                    { q: "What is the difference between ambiguity and vagueness?", a: "Ambiguity refers to unclear semantics/language with multiple meanings; vagueness refers to continuous phenomena with soft, uncertain spatial boundaries." },
+                    { q: "What does data currency (temporal accuracy) measure?", a: "How up-to-date a dataset is relative to changes in the real world." }
+                ],
+                quiz: [
+                    { q: "What is epistemic uncertainty?", answer: "Doubt stemming from a lack of knowledge that can be reduced or cured by gathering additional information." }
+                ]
+            }
+        ];
+
+        let activeWeekIndex = 0;
+
+        function renderApp() {
+            renderNav();
+            renderContent(activeWeekIndex);
+        }
+
+        function renderNav() {
+            const navContainer = document.getElementById('weekNav');
+            navContainer.innerHTML = courseData.map((item, index) => `
+                <button onclick="switchWeek(${index})" class="w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${index === activeWeekIndex ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-300 hover:bg-slate-800 hover:text-white'}">
+                    <span class="block font-semibold">${item.week}</span>
+                    <span class="block text-xs opacity-80 truncate">${item.title}</span>
+                </button>
+            `).join('');
+        }
+
+        function switchWeek(index) {
+            activeWeekIndex = index;
+            renderApp();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderContent(index) {
+            const data = courseData[index];
+            const contentArea = document.getElementById('contentArea');
+            
+            contentArea.innerHTML = `
+                <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl space-y-6">
+                    <div class="border-b border-slate-700 pb-4">
+                        <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">${data.week}</span>
+                        <h2 class="text-2xl font-bold text-white mt-1">${data.title}</h2>
+                    </div>
+
+                    <!-- Summary Section -->
+                    <div class="space-y-3">
+                        <h3 class="text-lg font-semibold text-emerald-400">Lecture Summary & Notes</h3>
+                        <div class="bg-slate-900/50 p-5 rounded-lg border border-slate-700/50">
+                            ${data.summary}
+                        </div>
+                    </div>
+
+                    <!-- Flashcards Section -->
+                    <div class="space-y-4 pt-4 border-t border-slate-700">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-semibold text-emerald-400">Interactive Flashcards (${data.flashcards.length})</h3>
+                            <span class="text-xs text-slate-400">Click card to flip</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            ${data.flashcards.map((fc, fcIndex) => `
+                                <div onclick="flipCard(this)" class="h-48 cursor-pointer perspective-1000">
+                                    <div class="relative w-full h-full duration-500 transform-style-3d shadow-md rounded-xl card-inner">
+                                        <!-- Front -->
+                                        <div class="absolute inset-0 w-full h-full bg-slate-900 border border-slate-700 rounded-xl p-5 flex flex-col justify-between backface-hidden">
+                                            <span class="text-xs font-bold text-emerald-400">QUESTION ${fcIndex + 1}</span>
+                                            <p class="text-sm font-medium text-slate-200 text-center">${fc.q}</p>
+                                            <span class="text-[10px] text-slate-500 text-center">Click to reveal answer</span>
+                                        </div>
+                                        <!-- Back -->
+                                        <div class="absolute inset-0 w-full h-full bg-emerald-950/80 border border-emerald-600/50 rounded-xl p-5 flex flex-col justify-between backface-hidden rotate-y-180">
+                                            <span class="text-xs font-bold text-emerald-400">ANSWER</span>
+                                            <p class="text-sm text-emerald-200 text-center">${fc.a}</p>
+                                            <span class="text-[10px] text-emerald-400/65 text-center">Click to flip back</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Quiz Review Section -->
+                    <div class="space-y-4 pt-4 border-t border-slate-700">
+                        <h3 class="text-lg font-semibold text-emerald-400">Quiz Review & Key Takeaways</h3>
+                        <div class="space-y-3">
+                            ${data.quiz.map((q, qIndex) => `
+                                <div class="bg-slate-900/50 border border-slate-700/60 rounded-lg p-4">
+                                    <p class="text-sm font-semibold text-slate-200 mb-1">Q: ${q.q}</p>
+                                    <p class="text-sm text-emerald-400 font-medium">✓ Correct Answer: ${q.answer}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function flipCard(cardElement) {
+            const inner = cardElement.querySelector('.card-inner');
+            if (inner.style.transform === 'rotateY(180deg)') {
+                inner.style.transform = 'rotateY(0deg)';
+            } else {
+                inner.style.transform = 'rotateY(180deg)';
+            }
+        }
+
+        // Search Filter
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            if (!term) return;
+
+            const foundIndex = courseData.findIndex(week => 
+                week.title.toLowerCase().includes(term) || 
+                week.summary.toLowerCase().includes(term) ||
+                week.flashcards.some(fc => fc.q.toLowerCase().includes(term) || fc.a.toLowerCase().includes(term))
+            );
+
+            if (foundIndex !== -1) {
+                switchWeek(foundIndex);
+            }
+        });
+
+        // Initialize App on load
+        renderApp();
+    </script>
+</body>
+</html>
